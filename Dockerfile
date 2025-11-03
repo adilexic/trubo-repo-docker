@@ -7,7 +7,7 @@
     # Set build target (default: web)
     ARG APP_NAME=web
     
-    RUN bun install --frozen-lockfile
+    RUN bun install 
     RUN bun run build --filter=${APP_NAME}
     
     # --- Stage 2: Runner ---
