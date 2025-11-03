@@ -1,5 +1,5 @@
 # --- Stage 1: Builder ---
-    FROM oven/bun:1 AS builder
+    FROM node:lates AS builder
 
     WORKDIR /app
     
@@ -7,13 +7,13 @@
     COPY . .
     
     # Install dependencies
-    RUN bun install
+    RUN npm install
     
     # Build all apps
-    RUN bun run build --filter=web --filter=docs
+    RUN npm run build --filter=web --filter=docs
     
     # --- Stage 2: Runner ---
-    FROM oven/bun:1 AS runner
+    FROM node:lates AS runner
     
     WORKDIR /app
     
@@ -28,5 +28,5 @@
     EXPOSE 3000
     
     # Serve root (web), /second, /third using static files
-    CMD ["bun", "x", "serve", "./dist", "--port", "3000"]
+    CMD ["npm", "x", "serve", "./dist", "--port", "3000"]
     
