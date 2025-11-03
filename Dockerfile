@@ -1,24 +1,33 @@
 # --- Stage 1: Builder ---
     FROM oven/bun:1 AS builder
+
     WORKDIR /app
     
+    # Copy the full repo
     COPY . .
     
-    # Set build target (default: web)
-    ARG APP_NAME=web
+    # Install dependencies
+    RUN bun install
     
-    RUN bun install 
-    RUN bun run build --filter=${APP_NAME}
+    # Build all apps
+    RUN bun run build --filter=web --filter=second --filter=third
     
     # --- Stage 2: Runner ---
     FROM oven/bun:1 AS runner
+    
     WORKDIR /app
     
-    # Copy built output
-    COPY --from=builder /app/apps/${APP_NAME}/dist ./dist
+    # Copy all built apps
+    COPY --from=builder /app/apps/web/dist ./dist/web
+    COPY --from=builder /app/apps/second/dist ./dist/second
+    COPY --from=builder /app/apps/third/dist ./dist/third
     
-    # Serve static files with Bun
-    CMD ["bun", "x", "serve", "dist"]
+    # Serve them with Bun static server
+    # We will merge into one folder structure so Bun can serve SPA routes
+    RUN mkdir -p ./dist/root && cp -r ./dist/web/* ./dist/root/
     
     EXPOSE 3000
+    
+    # Serve root (web), /second, /third using static files
+    CMD ["bun", "x", "serve", "./dist", "--port", "3000"]
     
