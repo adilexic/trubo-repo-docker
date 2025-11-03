@@ -10,7 +10,7 @@
     RUN bun install
     
     # Build all apps
-    RUN bun run build --filter=web --filter=second --filter=third
+    RUN bun run build --filter=web --filter=docs
     
     # --- Stage 2: Runner ---
     FROM oven/bun:1 AS runner
@@ -19,8 +19,7 @@
     
     # Copy all built apps
     COPY --from=builder /app/apps/web/dist ./dist/web
-    COPY --from=builder /app/apps/second/dist ./dist/second
-    COPY --from=builder /app/apps/third/dist ./dist/third
+    COPY --from=builder /app/apps/docs/dist ./dist/docs
     
     # Serve them with Bun static server
     # We will merge into one folder structure so Bun can serve SPA routes
