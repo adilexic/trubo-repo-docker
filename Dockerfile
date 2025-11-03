@@ -1,5 +1,5 @@
 # --- Stage 1: Builder ---
-    FROM node:lates AS builder
+    FROM node:latest AS builder
 
     WORKDIR /app
     
@@ -13,7 +13,7 @@
     RUN npm run build --filter=web --filter=docs
     
     # --- Stage 2: Runner ---
-    FROM node:lates AS runner
+    FROM node:latest AS runner
     
     WORKDIR /app
     
